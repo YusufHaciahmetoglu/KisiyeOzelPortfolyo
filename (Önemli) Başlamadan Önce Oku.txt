@@ -1,0 +1,111 @@
+# [İnternet Projesi] - Kurulum ve Çalıştırma Rehberi
+
+Bu rehber, "[İnternet Projesi]" adlı Node.js ve SQL Server tabanlı web uygulamasının yerel bir makinede kurulumu ve çalıştırılması için gerekli adımları açıklamaktadır.
+
+---
+
+## 1. Ön Gereksinimler 📋
+
+Projeyi çalıştırmadan önce aşağıdaki yazılımların sisteminizde kurulu olduğundan emin olunuz:
+
+1.  **Node.js ve npm:**
+    * Node.js (LTS sürümü önerilir. npm, Node.js ile birlikte gelir).
+    * İndirme Linki: [https://nodejs.org/tr/download/](https://nodejs.org/tr/download/)
+    * (İşletim sisteminize uygun olan yükleyiciyi seçiniz, genellikle Windows için "Windows Installer (.msi) 64-bit".)
+
+2.  **SQL Server:**
+    * SQL Server (Developer Edition veya Express Edition ücretsizdir ve bu proje için yeterlidir).
+    * İndirme Linki: [https://www.microsoft.com/tr-tr/sql-server/sql-server-downloads](https://www.microsoft.com/tr-tr/sql-server/sql-server-downloads)
+    * (Sayfada "Developer" veya "Express" sürümlerinden birini seçerek indirme yönergelerini takip edebilirsiniz.)
+
+3.  **SQL Server Management Studio (SSMS):**
+    * Veritabanını yönetmek ve yedeği geri yüklemek için gereklidir.
+    * İndirme Linki: [https://learn.microsoft.com/tr-tr/sql/ssms/download-sql-server-management-studio-ssms](https://learn.microsoft.com/tr-tr/sql/ssms/download-sql-server-management-studio-ssms)
+    * (Sayfadaki "SSMS'i ücretsiz indirin" bağlantısını kullanın.)
+
+4.  **Microsoft ODBC Driver for SQL Server:**
+    * Proje, "ODBC Driver 17 for SQL Server" (veya benzer güncel bir sürüm) kullanılarak geliştirilmiştir. Sisteminizde uyumlu bir ODBC sürücüsünün kurulu olması gerekir.
+    * İndirme Linki: [https://learn.microsoft.com/tr-tr/sql/connect/odbc/download-odbc-driver-for-sql-server](https://learn.microsoft.com/tr-tr/sql/connect/odbc/download-odbc-driver-for-sql-server)
+    * (Sayfadan işletim sisteminize uygun sürücüyü seçin, örneğin "Microsoft ODBC Driver 17 for SQL Server on Windows" için x64 olanı.)
+
+**Not:** Bu bağlantılar yazılımların resmi indirme sayfalarına yönlendirir. İndirme ve kurulum sırasında işletim sisteminize (örneğin Windows 64-bit) uygun sürümleri seçtiğinizden emin olun.
+
+---
+
+## 2. Kurulum Adımları ⚙️
+
+#### Adım 2.1: Proje Dosyalarının Hazırlanması
+
+1.  Proje dosyalarını (bu `README.md` dosyası dahil) bilgisayarınızda bir klasöre çıkarın.
+2.  Proje ile birlikte sağlanan `OkulProje.bak` dosyasını da kolay erişebileceğiniz bir yere kopyalayın.
+
+#### Adım 2.2: Node.js Paketlerinin Kurulumu
+
+1.  Bir terminal veya komut istemi açın.
+2.  Proje dosyalarını çıkardığınız ana klasöre gidin (örneğin, `cd C:\ProjeKlasoru`).
+3.  Aşağıdaki komutu VS Code Terminal üzerinden çalıştırarak gerekli Node.js paketlerini kurun:
+    npm install
+
+    Bu komut, `package.json` dosyasında listelenen tüm bağımlılıkları `node_modules` klasörüne yükleyecektir.
+
+#### Adım 2.3: Veritabanının Kurulumu (SQL Server'a Geri Yükleme)
+
+1.  **SQL Server Management Studio (SSMS)**'yu açın ve yerel SQL Server örneğinize (genellikle Windows Kimlik Doğrulaması (windows authenticator) ile) bağlanın.
+2.  Object Explorer'da (Sol panel) "Databases" (Veritabanları) klasörüne sağ tıklayın ve "Restore Database..." (Veritabanını Geri Yükle...) seçeneğini seçin.
+3.  "Restore Database" penceresinde:
+    * "Source" (Kaynak) bölümünde "Device:" (Aygıt:) seçeneğini işaretleyin ve yanındaki "..." (üç nokta) butonuna tıklayın.
+    * Açılan "Select backup devices" (Yedekleme aygıtlarını seç) penceresinde "Add" (Ekle) butonuna tıklayın.
+    * Adım 2.1'de kopyaladığınız `.bak` uzantılı veritabanı yedek dosyasını bulun ve seçin. "OK" tıklayın. Tekrar "OK" tıklayın.
+    * "Destination" (Hedef) bölümünde, "Database:" (Veritabanı:) alanına veritabanı için bir isim girin. Proje kodundaki bağlantı dizesi `OkulProje` adına göre ayarlandığı için bu ismi kullanmanız önerilir. Eğer farklı bir isim verirseniz, Adım 2.4'te bağlantı dizesini güncellemeniz gerekecektir.
+    * "OK" butonuna tıklayarak geri yükleme işlemini başlatın. İşlem başarıyla tamamlandığında bir onay mesajı göreceksiniz.
+
+#### Adım 2.4: Bağlantı Ayarlarının Yapılandırılması (`server.js`)
+
+1.  Proje klasörünüzdeki `server.js` dosyasını bir metin düzenleyici ile açın.
+2.  Dosyanın üst kısımlarında bulunan `connectionString` adlı değişkeni bulun. Örnek bir bağlantı dizesi şöyledir:
+    ```javascript
+    const connectionString = "server=LENOVO;Database=OkulProje;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server};";
+    ```
+3.  Bu bağlantı dizesini kendi SQL Server yapılandırmanıza göre düzenlemeniz gerekecektir:
+    * **`server=LENOVO`**: `LENOVO` kısmını kendi SQL Server örneğinizin adıyla değiştirin.
+        * Varsayılan SQL Server instance için: Genellikle bilgisayarınızın adı, `localhost` veya `.` (nokta).
+    * **`Database=OkulProje`**: Eğer veritabanını Adım 2.3'te farklı bir isimle geri yüklediyseniz, `OkulProje` kısmını o isimle değiştirin.
+    * **`Trusted_Connection=Yes`**: Windows Kimlik Doğrulaması kullanılacağını belirtir. Node.js sunucusunu çalıştıran Windows kullanıcısının SQL Server'a ve geri yüklediğiniz veritabanına erişim izni olmalıdır.
+    * **`Driver={ODBC Driver 17 for SQL Server}`**: Eğer sisteminizde farklı ve uyumlu bir ODBC sürücüsü kuruluysa veya bu sürücüyle sorun yaşarsanız, doğru sürücü adını buraya yazmanız gerekebilir. Ön Gereksinimler bölümünde belirtilen sürücüyü kurmanız önerilir.
+
+---
+
+## 3. Uygulamayı Çalıştırma 🚀
+
+1.  Tüm yapılandırmalar tamamlandıktan sonra, terminalde proje ana dizinindeyken aşağıdaki komutla Node.js sunucusunu başlatın:
+    ```bash
+    node server.js
+    ```
+2.  Terminalde "Sunucu http://localhost:3000 adresinde çalışıyor" (veya `server.js` içinde tanımlanan port numarasına göre benzer bir mesaj) görmelisiniz.
+
+---
+
+## 4. Uygulamaya Erişme 🌐
+
+1.  Bir web tarayıcısı açın (Chrome, Firefox, Edge vb.).
+2.  Adres çubuğuna `http://localhost:3000` yazın ve Enter'a basın (eğer `server.js` dosyasında farklı bir port belirtilmediyse).
+3.  Uygulamanın ana sayfası yüklenmeli ve SQL Server'dan gelen veriler ilgili bölümlerde görünmelidir.
+
+---
+
+## 5. Olası Sorunlar ve Çözümleri 🛠️
+
+* **Bağlantı Hataları (`Login failed`, `Could not connect`, `self-signed certificate` vb.):**
+    * `server.js` dosyasındaki `connectionString`'in Adım 2.4'e göre doğru yapılandırıldığından emin olun.
+    * SQL Server servisinin çalıştığından ve TCP/IP bağlantılarına izin verdiğinden emin olun (SQL Server Configuration Manager üzerinden kontrol edilebilir).
+    * Windows Kimlik Doğrulaması kullanıyorsanız, Node.js'i çalıştıran kullanıcının SQL Server'da ve ilgili veritabanında gerekli izinlere sahip olduğundan emin olun (Adım 2.5).
+    * Belirtilen ODBC sürücüsünün doğru ve kurulu olduğundan emin olun.
+* **`Cannot GET /` hatası:**
+    * Node.js sunucusunun çalıştığından emin olun.
+    * `server.js` içindeki statik dosya sunumu (`app.use(express.static(__dirname));`) ayarlarını veya `index.html` dosyasının proje kök dizininde olduğunu kontrol edin.
+* **SQL sorgu hataları (Veriler gelmiyor veya yanlış geliyor):**
+    * `server.js` içindeki SQL sorgularını ve `OkulProje` veritabanınızdaki tablo/sütun adlarının eşleştiğini kontrol edin. (Örneğin, `SELECT * FROM SİZİN_TABLO_ADINIZ` kısmındaki `SİZİN_TABLO_ADINIZ` doğru olmalı).
+
+---
+
+Bu rehberin projenin başarılı bir şekilde kurulmasına yardımcı olacağını umuyoruz!

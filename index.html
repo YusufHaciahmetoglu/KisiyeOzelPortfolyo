@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Rezume Free Template by Colorlib</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/style.css">
+
+	<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,700" rel="stylesheet">
+</head>
+
+<body data-spy="scroll" data-target="#pb-navbar" data-offset="200">
+
+
+
+	<nav class="navbar navbar-expand-lg site-navbar navbar-light bg-light" id="pb-navbar">
+
+		<div class="container">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+				aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+
+			<div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample09">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" href="#section-home">Ana Sayfa</a></li>
+					<li class="nav-item"><a class="nav-link" href="#section-portfolio">Projeler</a></li>
+					<li class="nav-item"><a class="nav-link" href="#section-about">Hakkında</a></li>
+					<li class="nav-item"><a class="nav-link" href="#section-lan">Diller</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<section class="site-hero" style="background-image: url(images/image_1.jpg);" id="section-home"
+		data-stellar-background-ratio="0.5">
+		<div class="container">
+			<div class="row intro-text align-items-center justify-content-center">
+				<div class="col-md-10 text-center pt-5">
+
+					<h1 class="site-heading site-animate">Hello, I am<strong class="d-block">Özhan Kara</strong>
+					</h1>
+					<strong class="d-block text-white text-uppercase letter-spacing">and this is my Portfolio</strong>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="table-container">
+		<h1>SQL Server'dan Gelen Veriler</h1>
+		<div id="veri-konteyneri">
+
+			<script>
+				async function verileriCek() {
+					try {
+						const response = await fetch('/projeler'); // veya /api/veriler
+						if (!response.ok) {
+							throw new Error(`HTTP hatası! Durum: ${response.status}`);
+						}
+						const veriler = await response.json();
+						const konteyner = document.getElementById('veri-konteyneri');
+						konteyner.innerHTML = '';
+
+						if (veriler.length === 0) {
+							konteyner.innerHTML = '<p>Gösterilecek veri bulunamadı.</p>';
+							return;
+						}
+						const tablo = document.createElement('table');
+						tablo.classList.add('table', 'table-dark', 'table-hover');
+						const baslikSatiri = document.createElement('tr');
+						const basliklar = ["Id", "Baslik", "Aciklama", "Tarih", "ResimUrl"];
+						basliklar.forEach(baslikMetni => {
+							const th = document.createElement('th');
+							th.textContent = baslikMetni;
+							baslikSatiri.appendChild(th);
+						});
+						tablo.appendChild(baslikSatiri);
+						veriler.forEach(kayit => {
+							const satir = document.createElement('tr');
+							function formatlaTarih(tarihStr) {
+								if (!tarihStr) return '';
+								const tarihObj = new Date(tarihStr);
+								const gun = String(tarihObj.getDate()).padStart(2, '0');
+								const ay = String(tarihObj.getMonth() + 1).padStart(2, '0');
+								const yil = tarihObj.getFullYear();
+								return `${gun}-${ay}-${yil}`;
+							}
+							const tdId = document.createElement('td');
+							tdId.textContent = kayit.Id;
+							satir.appendChild(tdId);
+
+							const tdBaslik = document.createElement('td');
+							tdBaslik.textContent = kayit.Baslik;
+							satir.appendChild(tdBaslik);
+
+							const tdAciklama = document.createElement('td');
+							tdAciklama.textContent = kayit.Aciklama;
+							satir.appendChild(tdAciklama);
+
+							const tdTarih = document.createElement('td');
+							tdTarih.textContent = formatlaTarih(kayit.Tarih);
+							satir.appendChild(tdTarih);
+
+							const tdResimUrl = document.createElement('td');
+							tdResimUrl.textContent = kayit.ResimUrl;
+							satir.appendChild(tdResimUrl);
+
+							tablo.appendChild(satir);
+						});
+
+						konteyner.appendChild(tablo);
+
+					} catch (hata) {
+						console.error('Veri çekme hatası:', hata);
+						document.getElementById('veri-konteyneri').innerHTML = `<p>Veriler yüklenirken bir hata oluştu: ${hata.message}</p>`;
+					}
+				}
+
+				document.addEventListener('DOMContentLoaded', verileriCek);
+			</script>
+		</div>
+	</div>
+
+
+
+	<section class="site-section" id="section-portfolio">
+		<div class="container">
+			<div class="row">
+				<div class="section-heading text-center col-md-12">
+					<h2><strong>My projects</strong></h2>
+				</div>
+			</div>
+			<div class="filters">
+				<ul>
+					<li class="active" data-filter="*">All</li>
+				</ul>
+			</div>
+
+			<div class="filters-content">
+				<div class="row grid">
+					<div class="single-portfolio col-sm-4 all mockup">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p2.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Modern Web Sayfası</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all mockup">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p3.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Oyun Sunucusu Web Sitesi </h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all packaging">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p4.png" alt="">
+							</div>
+
+						</div>
+						<div class="p-inner">
+							<h4>Araba Parca Sitesi</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all packaging">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p5.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Okul Web Sitesi </h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all typography">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p6.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Yöresel Yemek</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all photography">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p1.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Satış Sitesi</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="site-section" id="section-lan">
+		<div class="container">
+			<div class="row">
+				<div class="section-heading text-center col-md-12">
+					<h2><strong>Languages ​​I Know</strong></h2>
+				</div>
+			</div>
+			<div class="filters">
+				<ul>
+					<li class="active" data-filter="*">All</li>
+				</ul>
+			</div>
+
+			<div class="filters-content">
+				<div class="row grid">
+					<div class="single-portfolio col-sm-4 all mockup">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p12.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>HTML5</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all mockup">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p7.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>CSS</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all packaging">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p8.png" alt="">
+							</div>
+
+						</div>
+						<div class="p-inner">
+							<h4>Bootstrap</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all packaging">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p11.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>Android Studio (Java)</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all typography">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p10.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>C++</h4>
+						</div>
+					</div>
+					<div class="single-portfolio col-sm-4 all photography">
+						<div class="relative">
+							<div class="thumb">
+								<div class="overlay overlay-bg"></div>
+								<img class="image img-fluid" src="images/p9.png" alt="">
+							</div>
+						</div>
+						<div class="p-inner">
+							<h4>C#</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="site-section" id="section-about">
+		<div class="container">
+			<div class="row mb-5 align-items-center">
+				<div class="col-lg-7 pr-lg-5 mb-5 mb-lg-0">
+					<img src="images/image_1.jpg" alt="Image placeholder" class="img-fluid">
+				</div>
+				<div class="col-lg-5 pl-lg-5">
+					<div class="section-heading">
+						<h2>About <strong>Me</strong></h2>
+					</div>
+					<p class="lead">Avrasya University Computer Programming 2nd year student.
+						I designed various projects using HTML/CSS/Bootstrap and Android Studio (Java).
+						I am fluent in Blender, C++, C#, CSS/HTML/Bootstrap, Android Studio (Java) languages.
+					</p>
+					<a href="https://api.whatsapp.com/send?phone=905345151861&text=mesaj" role="button">
+						<img class="" src="img/whatsapp.svg" alt="Bootstrap" width="30" height="24">
+					</a>
+					<a href="#" role="button">
+						<img class="" src="img/twitter.svg" alt="Bootstrap" width="30" height="24">
+					</a>
+					<a href="ozhan61_61kara@hotmail.com" role="button">
+						<img class="" src="img/google.svg" alt="Bootstrap" width="30" height="24">
+					</a>
+					<a href="https://www.instagram.com/ozhankara_?igsh=MTZ6dXllOWN3ZWY2dw==" role="button">
+						<img class="" src="img/instagram.svg" alt="Bootstrap" width="30" height="24">
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<footer class="altyazı">
+		<h2>2025 Modern Web Page. All rights reserved: <a class="text-white" href="https://yusufhaciahmetogluu.carrd.co/">Yusuf</a></h2>
+
+	</footer>
+</body>
+
+</html>
